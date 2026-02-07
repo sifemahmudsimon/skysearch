@@ -2,6 +2,7 @@ import {httpAmadeusApi} from './http';
 import {FLIGHT_PRICING, FLIGHT_SEARCH, LOCATION_SEARCH} from './servicePattern/apiEndPoint';
 import {TokenService} from "../services/TokenService";
 import {TSearchFlightFormData} from "../types/formTypes";
+import {EnvService} from "./envService";
 
 /**
  * Search flights Acceptable Payload
@@ -82,7 +83,7 @@ export const ApiService = () => ({
 
 export async function fetchAmadeusToken(): Promise<string | null> {
     try {
-        const res = await fetch("http://localhost:3001/api/amadeus-token", {
+        const res = await fetch(`${EnvService.getBackendApiBaseUrl()}/api/amadeus-token`, {
             method: "POST",
         });
 
