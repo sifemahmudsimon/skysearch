@@ -1,13 +1,35 @@
-// server.js
 import http from "http";
 import axios from "axios";
 import {URLSearchParams} from "url";
+import path from "path";
+import {fileURLToPath} from "url";
+import dotenv from "dotenv";
+
+// __dirname fix for ESM
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Load .env file
+dotenv.config({path: path.join(__dirname, ".env")});
+
+console.log("CLIENT_ID:", process.env.AMADEUS_CLIENT_ID);
+console.log("CLIENT_SECRET:", process.env.AMADEUS_CLIENT_SECRET);
+
+
 
 // Replace these with your actual Amadeus credentials
-const AMADEUS_CLIENT_ID = "AR6LEfJsQ7LHKYy33vMEoGezJGIbKuoD";
-const AMADEUS_CLIENT_SECRET = "GGoB2J8HiAVKGPGH";
+// const AMADEUS_CLIENT_ID = "AR6LEfJsQ7LHKYy33vMEoGezJGIbKuoD";
+// const AMADEUS_CLIENT_SECRET = "GGoB2J8HiAVKGPGH";
 
-const PORT = 3001;
+const AMADEUS_CLIENT_ID = process.env.AMADEUS_CLIENT_ID;
+const AMADEUS_CLIENT_SECRET = process.env.AMADEUS_CLIENT_SECRET;
+
+console.log("Amadeus env loaded:", {
+    hasClientId: !!process.env.AMADEUS_CLIENT_ID,
+    hasClientSecret: !!process.env.AMADEUS_CLIENT_SECRET,
+});
+
+const PORT = process.env.PORT || 3001;
 
 const server = http.createServer(async (req, res) => {
     if (req.method === "POST" && req.url === "/api/amadeus-token") {
