@@ -10,4 +10,5 @@ export interface NormalizedFlight {
     arrivalTime: string;
     airlines: string[];
     aircraftTypes: string[];
+    raw: any
 }

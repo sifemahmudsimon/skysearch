@@ -33,5 +33,6 @@ export function normalizeFlight(flight: any): NormalizedFlight {
         aircraftTypes: segments.map(
             (s: any) => s.aircraft?.code
         ),
+        raw: flight,
     };
 }

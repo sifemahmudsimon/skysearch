@@ -5,10 +5,12 @@ import HeroBanner from "../../components/pageWizeComponent/homePage/HeroBanner"
 import SearchForm from "../../components/pageWizeComponent/homePage/SearchForm"
 import AvailableTicketCard from "../../components/pageWizeComponent/homePage/AvailableTicketCard"
 import FlightFilters from "../../components/pageWizeComponent/homePage/FlightFilters"
-import {Box, Pagination, Typography} from "@mui/material"
+import {Box, Dialog, Pagination, Typography} from "@mui/material"
 import {NormalizedFlight} from "../../types/normalizedFlight"
 import {normalizeFlight} from "../../utils/flightNormalizer"
 import FlightPriceTrends from "../../components/pageWizeComponent/homePage/FlightPriceTrends";
+import FlightPricingModal from "../../components/pageWizeComponent/homePage/FlightPricingModal";
+import {ApiService} from "../../api/apiService";
 
 interface CarrierDict {
     [code: string]: string
@@ -34,6 +36,12 @@ function HomePage() {
         aircraft: [] as string[],
         locations: [] as string[],
     })
+
+    const [pricingResponse, setPricingResponse] = useState<any>(null)
+    const [loadingPricing, setLoadingPricing] = useState(false)
+    const [open, setOpen] = useState(false)
+
+    console.log('pricingResponse', pricingResponse)
 
     // 🔹 Ref for scrolling to results
     const resultsRef = useRef<HTMLDivElement | null>(null)
@@ -118,6 +126,31 @@ function HomePage() {
         })
 
         setCurrentPage(1) // reset page on filter change
+    }
+
+    const handleSelectFlight = (flight: NormalizedFlight) => {
+        setOpen(true)
+        setLoadingPricing(true)
+        setPricingResponse(null)
+
+        const payload = {
+            data: {
+                type: "flight-offers-pricing",
+                flightOffers: [flight.raw], // ✅ ORIGINAL AMADEUS OBJECT
+            },
+        }
+
+        console.log('payload', payload)
+
+        ApiService()
+            .flightPricing(payload)
+            .then((res: any) => {
+                setPricingResponse(res.data)
+            })
+            .catch((err) => {
+                console.error("Pricing error", err)
+            })
+            .finally(() => setLoadingPricing(false))
     }
 
     return (
@@ -237,7 +270,7 @@ function HomePage() {
                         )}
 
                         {paginatedFlights.map((flight) => (
-                            <AvailableTicketCard key={flight.id} flight={flight}/>
+                            <AvailableTicketCard key={flight.id} flight={flight} onSelect={handleSelectFlight}/>
                         ))}
 
                         {/* ✅ MUI Pagination */}
@@ -255,6 +288,32 @@ function HomePage() {
                     </Box>
                 </Box>
             )}
+
+            <Dialog
+                open={open}
+                onClose={() => setOpen(false)}
+                maxWidth="lg"
+                fullWidth
+                PaperProps={{
+                    sx: {
+                        width: "100%",
+                        mx: {xs: 2, lg: 'auto'}, // 16px on mobile (xs), 0 on larger screens
+                    },
+                }}
+            >
+                {loadingPricing ? (
+                    <Box p={6} textAlign="center">
+                        Fetching latest price…
+                    </Box>
+                ) : pricingResponse ? (
+                    <FlightPricingModal pricingResponse={pricingResponse}/>
+                ) : (
+                    <Box p={6} textAlign="center">
+                        No pricing data available
+                    </Box>
+                )}
+            </Dialog>
+
         </>
     )
 }

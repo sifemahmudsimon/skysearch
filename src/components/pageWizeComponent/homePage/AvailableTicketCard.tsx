@@ -21,6 +21,11 @@ import {
 } from "@mui/icons-material";
 import {NormalizedFlight} from "../../../types/normalizedFlight";
 
+interface AvailableTicketCardProps {
+    flight: NormalizedFlight
+    onSelect: (flight: NormalizedFlight) => void
+}
+
 /* ── helpers ─────────────────────────────────────────── */
 
 function fmtTime(iso: string) {
@@ -38,11 +43,7 @@ function fmtDuration(iso: string) {
 
 /* ── main card ───────────────────────────────────────── */
 
-export default function AvailableTicketCard({
-                                                flight,
-                                            }: {
-    flight: NormalizedFlight;
-}) {
+export default function AvailableTicketCard({flight, onSelect}: AvailableTicketCardProps) {
     const dep = flight.route[0];
     const arr = flight.route[flight.route.length - 1];
     const direct = flight.stops === 0;
@@ -307,6 +308,7 @@ export default function AvailableTicketCard({
                     <Button
                         variant="contained"
                         disableElevation
+                        onClick={() => onSelect(flight)}
                         sx={{
                             width: {xs: '100%', md: 'auto'},
                             borderRadius: 2.5,
