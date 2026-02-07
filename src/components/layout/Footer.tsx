@@ -16,7 +16,7 @@ function Footer() {
                 bgcolor: "background.paper",
                 borderTop: 1,
                 borderColor: "divider",
-                mt: 16,
+                mt: 8,
                 py: 12,
                 px: { xs: 2, sm: 4 },
             }}
