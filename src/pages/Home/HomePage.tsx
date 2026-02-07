@@ -8,7 +8,6 @@ import FlightFilters from "../../components/pageWizeComponent/homePage/FlightFil
 import {Box, Pagination, Typography} from "@mui/material"
 import {NormalizedFlight} from "../../types/normalizedFlight"
 import {normalizeFlight} from "../../utils/flightNormalizer"
-import PriceTrendChart from "../../components/pageWizeComponent/homePage/FlightPriceTrends";
 import FlightPriceTrends from "../../components/pageWizeComponent/homePage/FlightPriceTrends";
 
 interface CarrierDict {
