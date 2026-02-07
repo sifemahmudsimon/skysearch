@@ -94,59 +94,70 @@ export default function FlightPricingModal({pricingResponse}: Props) {
                                             </Box>
 
                                             <Stack
-                                                direction={{xs: "row", sm: "row"}}
+                                                direction="row"
                                                 justifyContent="space-between"
-                                                alignItems={{xs: "center", md: "center"}}
-                                                spacing={1}
-                                                width={{xs: '100%', sm: 'auto'}}
+                                                alignItems="center"
+                                                spacing={0.75}
+                                                width={{xs: "100%", sm: "auto"}}
                                             >
                                                 {/* Departure */}
                                                 <Box>
-                                                    <Typography variant="caption" color="text.secondary">
+                                                    <Typography variant="caption" color="text.secondary"
+                                                                fontSize="0.7rem">
                                                         Departure
                                                     </Typography>
-                                                    <Typography fontWeight={500}>
+                                                    <Typography fontWeight={500} fontSize="0.85rem" whiteSpace="nowrap">
                                                         {new Date(seg.departure.at).toLocaleTimeString([], {
                                                             hour: "2-digit",
-                                                            minute: "2-digit"
+                                                            minute: "2-digit",
                                                         })}
                                                     </Typography>
-                                                    <Typography variant="body2" color="text.secondary">
+                                                    <Typography color="text.secondary" fontSize="0.7rem">
                                                         {new Date(seg.departure.at).toLocaleDateString([], {
                                                             month: "short",
-                                                            day: "numeric"
+                                                            day: "numeric",
                                                         })}
                                                     </Typography>
                                                 </Box>
 
-                                                {/* Flight duration with arrow */}
-                                                <Box display="flex" alignItems="center" justifyContent="center"
-                                                     minWidth={100}>
-                                                    <Typography variant="body2" color="text.secondary"
-                                                                textAlign="center">
+                                                {/* Duration */}
+                                                <Box
+                                                    display="flex"
+                                                    alignItems="center"
+                                                    justifyContent="center"
+                                                    minWidth={70}
+                                                >
+                                                    <Typography
+                                                        color="text.secondary"
+                                                        fontSize="0.7rem"
+                                                        textAlign="center"
+                                                        whiteSpace="nowrap"
+                                                    >
                                                         ⏱ {seg.duration.replace("PT", "").replace("H", "H ").replace("M", "m")}
                                                     </Typography>
                                                 </Box>
 
                                                 {/* Arrival */}
-                                                <Box textAlign={{xs: "left", sm: "right"}}>
-                                                    <Typography variant="caption" color="text.secondary">
+                                                <Box textAlign="right">
+                                                    <Typography variant="caption" color="text.secondary"
+                                                                fontSize="0.7rem">
                                                         Arrival
                                                     </Typography>
-                                                    <Typography fontWeight={500}>
+                                                    <Typography fontWeight={500} fontSize="0.85rem" whiteSpace="nowrap">
                                                         {new Date(seg.arrival.at).toLocaleTimeString([], {
                                                             hour: "2-digit",
-                                                            minute: "2-digit"
+                                                            minute: "2-digit",
                                                         })}
                                                     </Typography>
-                                                    <Typography variant="body2" color="text.secondary">
+                                                    <Typography color="text.secondary" fontSize="0.7rem">
                                                         {new Date(seg.arrival.at).toLocaleDateString([], {
                                                             month: "short",
-                                                            day: "numeric"
+                                                            day: "numeric",
                                                         })}
                                                     </Typography>
                                                 </Box>
                                             </Stack>
+
 
                                         </Stack>
 
