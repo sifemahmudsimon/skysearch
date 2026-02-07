@@ -244,7 +244,7 @@ function HomePage() {
                             zIndex: 10,
                         }}
                     >
-                        {filteredFlights.length > 0 && (
+                        {flightResults.length > 0 && (
                             <FlightFilters
                                 filters={filters}
                                 filterOptions={filterOptions}
