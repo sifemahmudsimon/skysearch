@@ -1,8 +1,6 @@
 import React from "react";
 import { Box, Container, Typography, Chip } from "@mui/material";
 import SparklesIcon from "@mui/icons-material/AutoAwesome";
-import SearchForm from "./SearchForm"; // Using MUI icon
-// import SearchForm from "./SearchForm"; // Make sure this component exists
 
 export default function HeroBanner() {
     return (

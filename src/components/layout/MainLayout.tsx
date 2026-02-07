@@ -3,7 +3,6 @@ import React from "react";
 import { Outlet } from "react-router-dom";
 import { Box, CssBaseline } from "@mui/material";
 import Header from "./Header";
-import Pages from "../../pages/Pages";
 import Footer from "./Footer";
 
 const MainLayout = () => {
@@ -13,7 +12,6 @@ const MainLayout = () => {
             <Header />
             <Box component="main" sx={{ py: 3, px: 2 }}>
                 <Outlet />
-                {/*<Pages/>*/}
             </Box>
             <Footer/>
 

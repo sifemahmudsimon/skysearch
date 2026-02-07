@@ -1,5 +1,5 @@
 import { Box, Button, IconButton, CircularProgress } from "@mui/material";
-import { AutoAwesome, LocationOn, Search, SwapHoriz } from "@mui/icons-material";
+import {AutoAwesome, LocationOn, SwapHoriz} from "@mui/icons-material";
 import { useForm } from "react-hook-form";
 import {useEffect, useState} from "react";
 import { LocalizationProvider } from "@mui/x-date-pickers";

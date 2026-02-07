@@ -1,7 +1,5 @@
 import {httpAmadeusApi} from './http';
-import {AMADEUS_AUTH_TOKEN, FLIGHT_SEARCH, LOCATION_SEARCH} from './servicePattern/apiEndPoint';
-import {HeaderService} from './headerService';
-import {EnvService} from './envService';
+import {FLIGHT_SEARCH, LOCATION_SEARCH} from './servicePattern/apiEndPoint';
 import {TokenService} from "../services/TokenService";
 import {TSearchFlightFormData} from "../types/formTypes";
 
