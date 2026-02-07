@@ -19,7 +19,6 @@ import {
     EventSeat,
     AirplaneTicket,
 } from "@mui/icons-material";
-import {NormalizedFlight} from "../../../types/normalizedFlight";
 import {Formats} from "../../../services/Formats";
 import {AvailableTicketCardProps} from "../../../types/flightTypes";
 

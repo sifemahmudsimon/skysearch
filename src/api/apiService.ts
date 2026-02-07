@@ -5,20 +5,29 @@ import {TSearchFlightFormData} from "../types/formTypes";
 import {EnvService} from "./envService";
 
 /**
- * Search flights Acceptable Payload
- *     originLocationCode: 'DAC',
- *     destinationLocationCode: 'DXB',
- *     departureDate: '2026-02-20',
- *     returnDate: '2026-02-28', [optional]
- *     adults: 2,
- *     children: 1, [optional]
- *     infants: 1, [optional]
- *     travelClass: 'ECONOMY', [optional]
- *     nonStop: false, [optional]
- *     currencyCode: 'USD', [optional]
- *     includedCheckedBagsOnly: true, [optional]
- *     maxPrice: 1500, [optional]
- *     max: 10, [optional]
+ * Search flights using the Amadeus Flight Offers Search API.
+ *
+ * @async
+ * @function searchFlights
+ *
+ * @param {TSearchFlightFormData} [params] - Flight search parameters.
+ * @param {string} params.originLocationCode - IATA code of the origin airport (e.g. 'DAC').
+ * @param {string} params.destinationLocationCode - IATA code of the destination airport (e.g. 'DXB').
+ * @param {string} params.departureDate - Departure date in YYYY-MM-DD format.
+ * @param {string} [params.returnDate] - Return date in YYYY-MM-DD format (for round trips).
+ * @param {number} params.adults - Number of adult passengers.
+ * @param {number} [params.children] - Number of child passengers.
+ * @param {number} [params.infants] - Number of infant passengers.
+ * @param {'ECONOMY' | 'PREMIUM_ECONOMY' | 'BUSINESS' | 'FIRST'} [params.travelClass] - Travel class.
+ * @param {boolean} [params.nonStop] - Whether to return only non-stop flights.
+ * @param {string} [params.currencyCode] - Currency code for pricing (e.g. 'USD').
+ * @param {boolean} [params.includedCheckedBagsOnly] - Return only offers including checked baggage.
+ * @param {number} [params.maxPrice] - Maximum total price.
+ * @param {number} [params.max] - Maximum number of results to return.
+ *
+ * @param {Record<string, string>} [headers={}] - Optional HTTP headers.
+ *
+ * @returns {Promise<AxiosResponse>} API response containing flight offers.
  */
 async function searchFlights(params?: TSearchFlightFormData, headers: any = {}) {
     return httpAmadeusApi.get(FLIGHT_SEARCH, {
@@ -56,28 +65,6 @@ async function searchLocations(query?: string) {
     })
 }
 
-//     try {
-//         const res = await httpAmadeusApi.get('/v1/reference-data/locations', {
-//             params: {
-//                 keyword: query,
-//                 subType: 'AIRPORT,CITY',
-//                 page: 1,
-//                 pageLimit: 10,
-//             },
-//         });
-//
-//         // Map response to label/value
-//         const locations = res.data.data.map((loc: any) => ({
-//             label: `${loc.name} (${loc.iataCode})`,
-//             value: loc.iataCode,
-//         }));
-//
-//         return { data: locations };
-//     } catch (err) {
-//         console.error("Error fetching locations:", err);
-//         return { data: [] };
-//     }
-// }
 /**
  * Backend API service providing all endpoints.
  */
