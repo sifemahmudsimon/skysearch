@@ -306,7 +306,11 @@ function HomePage() {
                         Fetching latest price…
                     </Box>
                 ) : pricingResponse ? (
-                    <FlightPricingModal pricingResponse={pricingResponse}/>
+                    <FlightPricingModal
+                        pricingResponse={pricingResponse}
+                        open={open}
+                        onClose={() => setOpen(false)}
+                    />
                 ) : (
                     <Box p={6} textAlign="center">
                         No pricing data available

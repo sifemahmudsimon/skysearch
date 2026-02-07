@@ -1,5 +1,5 @@
 import {httpAmadeusApi} from './http';
-import {FLIGHT_PRICING, FLIGHT_SEARCH, LOCATION_SEARCH} from './servicePattern/apiEndPoint';
+import {FLIGHT_ORDER, FLIGHT_PRICING, FLIGHT_SEARCH, LOCATION_SEARCH} from './servicePattern/apiEndPoint';
 import {TokenService} from "../services/TokenService";
 import {TSearchFlightFormData} from "../types/formTypes";
 import {EnvService} from "./envService";
@@ -29,6 +29,13 @@ async function searchFlights(params?: TSearchFlightFormData, headers: any = {}) 
 
 async function flightPricing(payload: any, headers: any = {}) {
     return httpAmadeusApi.post(FLIGHT_PRICING,
+        payload,
+        {headers}
+    );
+}
+
+async function flightOrder(payload: any, headers: any = {}) {
+    return httpAmadeusApi.post(FLIGHT_ORDER,
         payload,
         {headers}
     );
@@ -78,7 +85,8 @@ export const ApiService = () => ({
     searchFlights,
     fetchAmadeusToken,
     searchLocations,
-    flightPricing
+    flightPricing,
+    flightOrder
 });
 
 export async function fetchAmadeusToken(): Promise<string | null> {
