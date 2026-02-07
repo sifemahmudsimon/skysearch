@@ -14,6 +14,8 @@ export default function PassengerSelector({ values, setValue, anchor, setAnchor,
     // Read passengers directly from top-level values
     const totalPassengers = values.adults + values.children + values.infants;
 
+    const disableIncrement = totalPassengers >= 9
+
     const handleOpen = (e: React.MouseEvent<HTMLElement>) => setAnchor(e.currentTarget);
     const handleClose = () => setAnchor(null);
 
@@ -51,7 +53,8 @@ export default function PassengerSelector({ values, setValue, anchor, setAnchor,
                                 <Typography component="span" sx={{ mx: 1 }}>
                                     {values[type]}
                                 </Typography>
-                                <Button size="small" onClick={() => updatePassenger(type, 1)}>
+                                <Button size="small" disabled={disableIncrement}
+                                        onClick={() => updatePassenger(type, 1)}>
                                     +
                                 </Button>
                             </Box>
