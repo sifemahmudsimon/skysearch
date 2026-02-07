@@ -82,8 +82,10 @@ export const ApiService = () => ({
 });
 
 export async function fetchAmadeusToken(): Promise<string | null> {
+    const baseUrl = EnvService.getBackendApiBaseUrl();
+    console.log('Fetching Amadeus token from:', `${baseUrl}/api/amadeus-token`);
     try {
-        const res = await fetch(`${EnvService.getBackendApiBaseUrl()}/api/amadeus-token`, {
+        const res = await fetch(`${baseUrl}/api/amadeus-token`, {
             method: "POST",
         });
 
