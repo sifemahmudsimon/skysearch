@@ -22,7 +22,7 @@ export default function FlightReview({offer, pricingResponse, onContinue}: Props
                 pt: {xs: 2, sm: 3},
             }}
         >
-            {/* 🧾 HEADER */}
+            {/* HEADER */}
             <Box>
                 <Typography variant="h6" fontWeight={700} mb={0.5}>
                     Review your flight
@@ -35,7 +35,7 @@ export default function FlightReview({offer, pricingResponse, onContinue}: Props
                 <Divider sx={{mb: 2}}/>
             </Box>
 
-            {/* ✈️ SCROLLABLE CONTENT */}
+            {/* SCROLLABLE CONTENT */}
             <Box
                 sx={{
                     flex: 1,
@@ -139,7 +139,7 @@ export default function FlightReview({offer, pricingResponse, onContinue}: Props
                     ))}
                 </Stack>
 
-                {/* 👤 TRAVELERS */}
+                {/* TRAVELERS */}
                 <Card sx={{mt: 3, p: {xs: 1.5, sm: 2}}}>
                     <Typography fontWeight={600} mb={1}>
                         Passenger details
@@ -164,7 +164,7 @@ export default function FlightReview({offer, pricingResponse, onContinue}: Props
                     </Stack>
                 </Card>
 
-                {/* 💳 PRICE */}
+                {/* PRICE */}
                 <Card sx={{mt: 3, p: {xs: 1.5, sm: 2}}}>
                     <Typography fontWeight={600} mb={1}>
                         Price summary
@@ -193,16 +193,9 @@ export default function FlightReview({offer, pricingResponse, onContinue}: Props
                 </Card>
             </Box>
 
-            {/* 📌 CTA BUTTON */}
+            {/* CTA BUTTON */}
             <Box
-                sx={{
-                    position: "sticky",
-                    bottom: 0,
-                    mt: 3,
-                    pt: 2,
-                    pb: {xs: 2, sm: 3},
-                    
-                }}
+                sx={{position: "sticky", bottom: 0, mt: 3, pt: 2, pb: {xs: 2, sm: 3},}}
             >
                 <Button fullWidth size="large" variant="contained" onClick={onContinue}>
                     Continue to traveller details

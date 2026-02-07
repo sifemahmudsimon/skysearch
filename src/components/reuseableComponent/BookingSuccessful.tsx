@@ -10,8 +10,8 @@ export default function BookingSuccess({onClose}: BookingSuccessProps) {
     return (
         <Box
             textAlign="center"
-            px={{xs: 3, sm: 6}} // responsive horizontal padding
-            py={{xs: 8, sm: 12}} // responsive vertical padding
+            px={{xs: 3, sm: 6}}
+            py={{xs: 8, sm: 12}}
             display="flex"
             flexDirection="column"
             alignItems="center"

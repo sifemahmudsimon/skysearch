@@ -13,50 +13,14 @@ import {
     FormControlLabel,
 } from "@mui/material";
 import {useForm, Controller, useFieldArray} from "react-hook-form";
-
-interface Document {
-    documentType: string;
-    birthPlace: string;
-    issuanceLocation: string;
-    issuanceDate: string;
-    number: string;
-    expiryDate: string;
-    issuanceCountry: string;
-    validityCountry: string;
-    nationality: string;
-    holder: boolean;
-}
-
-interface Traveler {
-    id: string;
-    firstName: string;
-    lastName: string;
-    dateOfBirth: string;
-    gender: "Male" | "Female" | "Other" | "";
-    email: string;
-    phone: string;
-    documents: Document[];
-}
-
-interface TravelerFormProps {
-    travelers: Traveler[];
-    onSubmit: (formData: Traveler[]) => void | Promise<void>;
-    onBack?: () => void;
-}
-
-const genders = ["Male", "Female", "Other"];
-const documentTypes = ["PASSPORT", "ID_CARD"];
+import {Traveler, TravelerFormProps} from "../../../../types/flightTypes";
+import {DropDowns} from "../../../../constants/dropDowns";
 
 export default function TravelerForm({travelers, onBack, onSubmit}: TravelerFormProps) {
-    const {
-        control,
-        handleSubmit,
-        formState: {errors},
-    } = useForm<{ travelers: Traveler[] }>({
-        defaultValues: {travelers},
-        mode: "onSubmit", // only validate on submit
-    });
 
+    const {control, handleSubmit, formState: {errors},} = useForm<{
+        travelers: Traveler[]
+    }>({defaultValues: {travelers}, mode: "onSubmit"});
     const {fields} = useFieldArray({control, name: "travelers"});
 
     return (
@@ -70,6 +34,7 @@ export default function TravelerForm({travelers, onBack, onSubmit}: TravelerForm
             }}
         >
             <form onSubmit={handleSubmit((data) => onSubmit(data.travelers))}>
+
                 <Typography variant="h5" fontWeight={600} mb={3}>
                     Passenger Details
                 </Typography>
@@ -81,7 +46,7 @@ export default function TravelerForm({travelers, onBack, onSubmit}: TravelerForm
                                 Traveler {idx + 1}
                             </Typography>
 
-                            {/* Line 1: First & Last Name */}
+                            {/* First & Last Name */}
                             <Stack direction={{xs: "column", sm: "row"}} spacing={2} mb={2}>
                                 <Controller
                                     name={`travelers.${idx}.firstName`}
@@ -115,7 +80,7 @@ export default function TravelerForm({travelers, onBack, onSubmit}: TravelerForm
                                 />
                             </Stack>
 
-                            {/* Line 2: DOB & Gender */}
+                            {/* DOB & Gender */}
                             <Stack direction={{xs: "column", sm: "row"}} spacing={2} mb={2}>
                                 <Controller
                                     name={`travelers.${idx}.dateOfBirth`}
@@ -148,7 +113,7 @@ export default function TravelerForm({travelers, onBack, onSubmit}: TravelerForm
                                             error={!!errors.travelers?.[idx]?.gender}
                                             helperText={errors.travelers?.[idx]?.gender?.message}
                                         >
-                                            {genders.map((g) => (
+                                            {DropDowns.genders.map((g) => (
                                                 <MenuItem key={g} value={g}>
                                                     {g}
                                                 </MenuItem>
@@ -158,7 +123,7 @@ export default function TravelerForm({travelers, onBack, onSubmit}: TravelerForm
                                 />
                             </Stack>
 
-                            {/* Line 3: Email & Phone */}
+                            {/* Email & Phone */}
                             <Stack direction={{xs: "column", sm: "row"}} spacing={2} mb={2}>
                                 <Controller
                                     name={`travelers.${idx}.email`}
@@ -193,7 +158,7 @@ export default function TravelerForm({travelers, onBack, onSubmit}: TravelerForm
                                 />
                             </Stack>
 
-                            {/* Line 4: Document Type & Number */}
+                            {/* Document Type & Number */}
                             <Stack direction={{xs: "column", sm: "row"}} spacing={2} mb={2}>
                                 <Controller
                                     name={`travelers.${idx}.documents.0.documentType`}
@@ -209,7 +174,7 @@ export default function TravelerForm({travelers, onBack, onSubmit}: TravelerForm
                                             error={!!errors.travelers?.[idx]?.documents?.[0]?.documentType}
                                             helperText={errors.travelers?.[idx]?.documents?.[0]?.documentType?.message}
                                         >
-                                            {documentTypes.map((d) => (
+                                            {DropDowns.documentTypes.map((d) => (
                                                 <MenuItem key={d} value={d}>
                                                     {d}
                                                 </MenuItem>
@@ -234,7 +199,7 @@ export default function TravelerForm({travelers, onBack, onSubmit}: TravelerForm
                                 />
                             </Stack>
 
-                            {/* Line 5: Issue & Expiry */}
+                            {/* Issue & Expiry */}
                             <Stack direction={{xs: "column", sm: "row"}} spacing={2} mb={2}>
                                 <Controller
                                     name={`travelers.${idx}.documents.0.issuanceDate`}
@@ -272,7 +237,7 @@ export default function TravelerForm({travelers, onBack, onSubmit}: TravelerForm
                                 />
                             </Stack>
 
-                            {/* Line 6: Issuance, Validity, Nationality */}
+                            {/* Issuance, Validity, Nationality */}
                             <Stack direction={{xs: "column", sm: "row"}} spacing={2} mb={2}>
                                 <Controller
                                     name={`travelers.${idx}.documents.0.issuanceCountry`}
@@ -321,7 +286,7 @@ export default function TravelerForm({travelers, onBack, onSubmit}: TravelerForm
                                 />
                             </Stack>
 
-                            {/* Line 7: Birth Place, Issuance Location, Holder */}
+                            {/* Birth Place, Issuance Location, Holder */}
                             <Stack direction={{xs: "column", sm: "row"}} spacing={2}>
                                 <Controller
                                     name={`travelers.${idx}.documents.0.birthPlace`}
@@ -371,13 +336,9 @@ export default function TravelerForm({travelers, onBack, onSubmit}: TravelerForm
                 </Stack>
 
                 <Box sx={{mt: 3}}>
-                    <Button type="submit" fullWidth size="medium" variant="contained">
-                        Submit
-                    </Button>
+                    <Button type="submit" fullWidth size="medium" variant="contained">Submit</Button>
                     {onBack && (
-                        <Button fullWidth size="medium" variant="outlined" sx={{mt: 1}} onClick={onBack}>
-                            Back
-                        </Button>
+                        <Button fullWidth size="medium" variant="outlined" sx={{mt: 1}} onClick={onBack}>Back</Button>
                     )}
                 </Box>
             </form>

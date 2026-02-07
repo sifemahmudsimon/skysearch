@@ -8,14 +8,9 @@ import TravelerForm from "./flightModal/TravelerForm";
 import BookingSuccess from "../../reuseableComponent/BookingSuccessful";
 import BookingFailed from "../../reuseableComponent/BookingFailed";
 import {ApiService} from "../../../api/apiService";
+import {FlightModalProps} from "../../../types/flightTypes";
 
-interface Props {
-    pricingResponse: any;
-    open: boolean;
-    onClose: () => void;
-}
-
-export default function FlightPricingModal({pricingResponse, open, onClose}: Props) {
+export default function FlightModal({pricingResponse, open, onClose}: FlightModalProps) {
     const [modalState, setModalState] = useState<ModalStates>(ModalStates.Initial);
     const [errorMessage, setErrorMessage] = useState<string>("Something went wrong");
 
@@ -23,7 +18,7 @@ export default function FlightPricingModal({pricingResponse, open, onClose}: Pro
     if (!offer) return null;
 
     const handleSubmitBooking = (formData: any[]) => {
-        // Transform form data to Amadeus payload format
+
         const travelersPayload = formData.map((t, idx) => ({
             id: String(idx + 1),
             dateOfBirth: t.dateOfBirth,
@@ -103,19 +98,12 @@ export default function FlightPricingModal({pricingResponse, open, onClose}: Pro
     };
 
     return (
-        <Dialog
-            open={open}
-            onClose={onClose}
-            maxWidth="lg"
-            fullWidth
+        <Dialog open={open} onClose={onClose} maxWidth="lg" fullWidth
             PaperProps={{sx: {width: "100%", mx: {xs: 2, lg: "auto"}}}}
         >
             {modalState === ModalStates.Initial && (
-                <FlightReview
-                    offer={offer}
-                    pricingResponse={pricingResponse}
-                    onContinue={() => setModalState(ModalStates.Form)}
-                />
+                <FlightReview offer={offer} pricingResponse={pricingResponse}
+                              onContinue={() => setModalState(ModalStates.Form)}/>
             )}
 
             {modalState === ModalStates.Form && (
@@ -149,15 +137,9 @@ export default function FlightPricingModal({pricingResponse, open, onClose}: Pro
             )}
 
             {modalState === ModalStates.Success && <BookingSuccess onClose={onClose}/>}
-            {modalState === ModalStates.Failed && (
-                <BookingFailed
-                    onClose={onClose}
-                    onRetry={() => setModalState(ModalStates.Form)}
-                    errorMsg={errorMessage}
-                />
-
-
-            )}
+            {modalState === ModalStates.Failed &&
+                <BookingFailed onClose={onClose} onRetry={() => setModalState(ModalStates.Form)}
+                               errorMsg={errorMessage}/>}
         </Dialog>
     );
 }

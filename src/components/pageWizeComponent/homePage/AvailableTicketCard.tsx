@@ -20,39 +20,16 @@ import {
     AirplaneTicket,
 } from "@mui/icons-material";
 import {NormalizedFlight} from "../../../types/normalizedFlight";
+import {Formats} from "../../../services/Formats";
+import {AvailableTicketCardProps} from "../../../types/flightTypes";
 
-interface AvailableTicketCardProps {
-    flight: NormalizedFlight
-    onSelect: (flight: NormalizedFlight) => void
-}
 
-/* ── helpers ─────────────────────────────────────────── */
-
-function fmtTime(iso: string) {
-    return new Date(iso).toLocaleTimeString([], {
-        hour: "2-digit",
-        minute: "2-digit",
-    });
-}
-
-function fmtDuration(iso: string) {
-    const m = iso.match(/PT(?:(\d+)H)?(?:(\d+)M)?/);
-    if (!m) return iso;
-    return [m[1] && `${m[1]}h`, m[2] && `${m[2]}m`].filter(Boolean).join(" ");
-}
-
-/* ── main card ───────────────────────────────────────── */
-
+//main card
 export default function AvailableTicketCard({flight, onSelect}: AvailableTicketCardProps) {
+
     const dep = flight.route[0];
     const arr = flight.route[flight.route.length - 1];
     const direct = flight.stops === 0;
-
-    if (flight.id === '1') {
-
-        console.log('flight:', flight);
-
-    }
 
     return (
         <Card
@@ -81,7 +58,7 @@ export default function AvailableTicketCard({flight, onSelect}: AvailableTicketC
             />
 
             <CardContent sx={{p: 0}}>
-                {/* ── header row: airline + cabin | price ── */}
+                {/*header row: airline + cabin | price*/}
                 <Box
                     sx={{
                         display: "flex",
@@ -134,7 +111,7 @@ export default function AvailableTicketCard({flight, onSelect}: AvailableTicketC
                     </Box>
                 </Box>
 
-                {/* ── route visualisation ── */}
+                {/*route visualisation*/}
                 <Box sx={{px: 3, pt: 1.5, pb: 2}}>
                     <Box
                         sx={{
@@ -147,7 +124,7 @@ export default function AvailableTicketCard({flight, onSelect}: AvailableTicketC
                         {/* departure */}
                         <AirportBubble
                             code={dep}
-                            time={fmtTime(flight.departureTime)}
+                            time={Formats.fmtTime(flight.departureTime)}
                             icon={<FlightTakeoff sx={{color: "#1D4ED8", fontSize: 20}}/>}
                             bgColor="#EFF6FF"
                         />
@@ -164,7 +141,7 @@ export default function AvailableTicketCard({flight, onSelect}: AvailableTicketC
                                     overflow: "visible",
                                 }}
                             >
-                                {/* animated dash overlay */}
+                                {/* dash overlay */}
                                 <Box
                                     sx={{
                                         position: "absolute",
@@ -225,7 +202,7 @@ export default function AvailableTicketCard({flight, onSelect}: AvailableTicketC
                                     variant="caption"
                                     sx={{fontWeight: 700, color: "#334155", fontSize: "0.72rem"}}
                                 >
-                                    {fmtDuration(flight.totalDuration)}
+                                    {Formats.fmtDuration(flight.totalDuration)}
                                 </Typography>
                                 <Typography
                                     variant="caption"
@@ -245,13 +222,13 @@ export default function AvailableTicketCard({flight, onSelect}: AvailableTicketC
                         {/* arrival */}
                         <AirportBubble
                             code={arr}
-                            time={fmtTime(flight.arrivalTime)}
+                            time={Formats.fmtTime(flight.arrivalTime)}
                             icon={<FlightLand sx={{color: "#10B981", fontSize: 20}}/>}
                             bgColor="#F0FDF4"
                         />
                     </Box>
 
-                    {/* full route breadcrumb */}
+                    {/*full route breadcrumb*/}
                     {flight.route.length > 2 && (
                         <Typography
                             variant="caption"
@@ -268,14 +245,14 @@ export default function AvailableTicketCard({flight, onSelect}: AvailableTicketC
                     )}
                 </Box>
 
-                {/* ── boarding-pass punch-hole divider ── */}
+                {/*boarding-pass punch-hole style divider */}
                 <Box sx={{position: "relative", mx: 0, my: 0.5}}>
                     <Divider sx={{borderStyle: "dashed", borderColor: "#E2E8F0"}}/>
                     <PunchHole side="left"/>
                     <PunchHole side="right"/>
                 </Box>
 
-                {/* ── footer: meta chips + book button ── */}
+                {/*footer: meta chips + book button*/}
                 <Box
                     sx={{
                         display: "flex",
@@ -291,7 +268,7 @@ export default function AvailableTicketCard({flight, onSelect}: AvailableTicketC
                         <FooterDetail
                             icon={<AccessTime sx={{fontSize: 15, color: "#64748B"}}/>}
                             label="Duration"
-                            value={fmtDuration(flight.totalDuration)}
+                            value={Formats.fmtDuration(flight.totalDuration)}
                         />
                         <FooterDetail
                             icon={<AirplaneTicket sx={{fontSize: 15, color: "#64748B"}}/>}
@@ -333,14 +310,9 @@ export default function AvailableTicketCard({flight, onSelect}: AvailableTicketC
     );
 }
 
-/* ── sub-components ──────────────────────────────────── */
+//sub-components
 
-function AirportBubble({
-                           code,
-                           time,
-                           icon,
-                           bgColor,
-                       }: {
+function AirportBubble({code, time, icon, bgColor,}: {
     code: string;
     time: string;
     icon: React.ReactNode;
@@ -392,15 +364,7 @@ function PunchHole({side}: { side: "left" | "right" }) {
     );
 }
 
-function FooterDetail({
-                          icon,
-                          label,
-                          value,
-                      }: {
-    icon: React.ReactNode;
-    label: string;
-    value: string;
-}) {
+function FooterDetail({icon, label, value,}: { icon: React.ReactNode; label: string; value: string; }) {
     return (
         <Box>
             <Box sx={{display: "flex", alignItems: "center", gap: 0.4, mb: 0.1}}>

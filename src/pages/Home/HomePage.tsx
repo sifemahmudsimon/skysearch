@@ -5,11 +5,11 @@ import HeroBanner from "../../components/pageWizeComponent/homePage/HeroBanner"
 import SearchForm from "../../components/pageWizeComponent/homePage/SearchForm"
 import AvailableTicketCard from "../../components/pageWizeComponent/homePage/AvailableTicketCard"
 import FlightFilters from "../../components/pageWizeComponent/homePage/FlightFilters"
-import {Box, Dialog, Pagination, Typography} from "@mui/material"
+import {Box, Dialog, LinearProgress, Pagination, Typography} from "@mui/material"
 import {NormalizedFlight} from "../../types/normalizedFlight"
 import {normalizeFlight} from "../../utils/flightNormalizer"
 import FlightPriceTrends from "../../components/pageWizeComponent/homePage/FlightPriceTrends";
-import FlightPricingModal from "../../components/pageWizeComponent/homePage/FlightPricingModal";
+import FlightModal from "../../components/pageWizeComponent/homePage/FlightModal";
 import {ApiService} from "../../api/apiService";
 
 interface CarrierDict {
@@ -43,7 +43,7 @@ function HomePage() {
 
     console.log('pricingResponse', pricingResponse)
 
-    // 🔹 Ref for scrolling to results
+    //Ref for scrolling to results
     const resultsRef = useRef<HTMLDivElement | null>(null)
 
 
@@ -58,7 +58,7 @@ function HomePage() {
         }
     }, [flightResults])
 
-    // 🔹 Filter options from API dictionaries
+    //Filter options from API dictionaries
     const filterOptions = useMemo(
         () => ({
             carrierOptions: (flightResults?.dictionaries?.carriers || {}) as CarrierDict,
@@ -103,14 +103,14 @@ function HomePage() {
         })
     }, [normalizedFlights, filters])
 
-    // 🔹 Pagination
+    //Pagination
     const totalPages = Math.ceil(filteredFlights.length / FLIGHTS_PER_PAGE)
     const paginatedFlights = filteredFlights.slice(
         (currentPage - 1) * FLIGHTS_PER_PAGE,
         currentPage * FLIGHTS_PER_PAGE
     )
 
-    // 🔹 Checkbox handler
+    //Checkbox handler
     const handleCheckboxChange = (
         category: keyof typeof filters,
         value: string
@@ -125,7 +125,7 @@ function HomePage() {
             }
         })
 
-        setCurrentPage(1) // reset page on filter change
+        setCurrentPage(1)
     }
 
     const handleSelectFlight = (flight: NormalizedFlight) => {
@@ -136,7 +136,7 @@ function HomePage() {
         const payload = {
             data: {
                 type: "flight-offers-pricing",
-                flightOffers: [flight.raw], // ✅ ORIGINAL AMADEUS OBJECT
+                flightOffers: [flight.raw],
             },
         }
 
@@ -212,10 +212,8 @@ function HomePage() {
 
                 {/* Second part */}
                 {flightResults?.data.length > 0 ? (
-                    // Single-line version: keep inline
                     <>{" "}Your Trip.</>
                 ) : (
-                    // Double-line version: force new line
                     <Box component="span" sx={{display: "block"}}>
                         Journeys Made Memorable.
                     </Box>
@@ -273,7 +271,6 @@ function HomePage() {
                             <AvailableTicketCard key={flight.id} flight={flight} onSelect={handleSelectFlight}/>
                         ))}
 
-                        {/* ✅ MUI Pagination */}
                         {totalPages > 1 && (
                             <Box display="flex" justifyContent="center" mt={4}>
                                 <Pagination
@@ -297,16 +294,17 @@ function HomePage() {
                 PaperProps={{
                     sx: {
                         width: "100%",
-                        mx: {xs: 2, lg: 'auto'}, // 16px on mobile (xs), 0 on larger screens
+                        mx: {xs: 2, lg: 'auto'},
                     },
                 }}
             >
                 {loadingPricing ? (
                     <Box p={6} textAlign="center">
-                        Fetching latest price…
+                        <Typography mb={2}>Loading, Please wait ...</Typography>
+                        <LinearProgress/>
                     </Box>
                 ) : pricingResponse ? (
-                    <FlightPricingModal
+                    <FlightModal
                         pricingResponse={pricingResponse}
                         open={open}
                         onClose={() => setOpen(false)}

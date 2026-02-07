@@ -14,10 +14,8 @@ import {TravelClass, TripType} from "../../../constants/tripTypes";
 import {ApiService} from "../../../api/apiService";
 import {TSearchFlightFormData} from "../../../types/formTypes";
 import dayjs from "dayjs";
+import {SearchFormProps} from "../../../types/flightTypes";
 
-interface SearchFormProps {
-    setFlightResults?: (data: any) => void;
-}
 
 export default function SearchForm({ setFlightResults }: SearchFormProps) {
     const today = new Date();
@@ -63,7 +61,7 @@ export default function SearchForm({ setFlightResults }: SearchFormProps) {
             returnDate: formatDate(formData.returnDate),
         };
 
-        setLoading(true); // ✅ start loading
+        setLoading(true);
         setFlightResults?.(null);
 
         console.log("Payload for Amadeus API:", payload);
@@ -91,8 +89,8 @@ export default function SearchForm({ setFlightResults }: SearchFormProps) {
                     display: "flex",
                     flexDirection: "column",
                     gap: 2,
-                    pointerEvents: loading ? "none" : "auto", // ✅ disable all inputs while loading
-                    opacity: loading ? 0.6 : 1,             // optional: fade effect
+                    pointerEvents: loading ? "none" : "auto", // disable all inputs while loading
+                    opacity: loading ? 0.6 : 1,
                 }}
             >
                 {/* Trip Type & Travel Class */}

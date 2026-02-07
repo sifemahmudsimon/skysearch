@@ -9,24 +9,10 @@ import {
     ResponsiveContainer,
 } from "recharts";
 import {Box, Typography} from "@mui/material";
+import {FlightPriceTrendsProps} from "../../../types/flightTypes";
 
-interface FlightOffer {
-    id: string;
-    price: {
-        total: string; // e.g., "2823.33"
-    };
-    itineraries: {
-        segments: {
-            departure: { at: string }; // e.g., "2026-02-07T06:25:00"
-        }[];
-    }[];
-}
+const FlightPriceTrends: React.FC<FlightPriceTrendsProps> = ({finalResult}) => {
 
-interface Props {
-    finalResult?: FlightOffer[] | null;
-}
-
-const FlightPriceTrends: React.FC<Props> = ({finalResult}) => {
     // Prepare chart data
     const chartData = useMemo(() => {
         if (!finalResult || finalResult.length === 0) return [];
@@ -69,7 +55,7 @@ const FlightPriceTrends: React.FC<Props> = ({finalResult}) => {
             : "",
     }));
 
-    // Show message if no data
+    // return if no data
     if (!enrichedData.length) {
         return null
     }

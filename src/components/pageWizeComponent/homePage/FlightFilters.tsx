@@ -22,29 +22,10 @@ import {
 import TuneIcon from "@mui/icons-material/Tune"
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore"
 import CloseIcon from "@mui/icons-material/Close"
+import {FlightFiltersProps} from "../../../types/flightTypes";
 
-interface FlightFiltersProps {
-    filters: {
-        carriers: string[]
-        aircraft: string[]
-        locations: string[]
-    }
-    filterOptions: {
-        carrierOptions: Record<string, string>
-        aircraftOptions: Record<string, string>
-        locationOptions: Record<string, { cityCode: string }>
-    }
-    onCheckboxChange: (
-        category: keyof FlightFiltersProps["filters"],
-        value: string
-    ) => void
-}
 
-const FlightFilters: React.FC<FlightFiltersProps> = ({
-                                                         filters,
-                                                         filterOptions,
-                                                         onCheckboxChange,
-                                                     }) => {
+const FlightFilters: React.FC<FlightFiltersProps> = ({filters, filterOptions, onCheckboxChange,}) => {
     const theme = useTheme()
     const isMobile = useMediaQuery(theme.breakpoints.down("lg"))
     const [drawerOpen, setDrawerOpen] = useState(false)
@@ -58,14 +39,10 @@ const FlightFilters: React.FC<FlightFiltersProps> = ({
         ([code, loc]) => [code, `${code} (${loc.cityCode})`] as [string, string]
     )
 
-    const renderCheckboxes = (
-        entries: [string, string][],
-        category: keyof FlightFiltersProps["filters"]
-    ) => (
+    const renderCheckboxes = (entries: [string, string][], category: keyof FlightFiltersProps["filters"]) => (
         <FormGroup>
             {entries.map(([code, name]) => (
-                <FormControlLabel
-                    key={code}
+                <FormControlLabel key={code}
                     control={
                         <Checkbox
                             checked={filters[category].includes(code)}
@@ -79,25 +56,12 @@ const FlightFilters: React.FC<FlightFiltersProps> = ({
         </FormGroup>
     )
 
-    const renderAccordionGroup = (
-        title: string,
-        entries: [string, string][],
-        category: keyof FlightFiltersProps["filters"],
-        defaultExpanded: boolean
-    ) => (
-        <Accordion
-            defaultExpanded={defaultExpanded}
-            disableGutters
-            elevation={0}
-            sx={{
-                "&:before": {display: "none"}, // remove shadow/line
-                backgroundColor: "transparent", // transparent bg
-            }}
+    const renderAccordionGroup = (title: string, entries: [string, string][], category: keyof FlightFiltersProps["filters"], defaultExpanded: boolean) => (
+
+        <Accordion defaultExpanded={defaultExpanded} disableGutters elevation={0}
+                   sx={{"&:before": {display: "none"}, backgroundColor: "transparent",}}
         >
-            <AccordionSummary
-                expandIcon={<ExpandMoreIcon/>}
-                sx={{backgroundColor: "transparent", px: 0}}
-            >
+            <AccordionSummary expandIcon={<ExpandMoreIcon/>} sx={{backgroundColor: "transparent", px: 0}}>
                 <Box sx={{display: "flex", alignItems: "center", gap: 1}}>
                     <Typography>{title}</Typography>
                     {filters[category].length > 0 && (
@@ -105,33 +69,26 @@ const FlightFilters: React.FC<FlightFiltersProps> = ({
                     )}
                 </Box>
             </AccordionSummary>
+
             <AccordionDetails sx={{backgroundColor: "transparent", px: 0}}>
                 {renderCheckboxes(entries, category)}
             </AccordionDetails>
         </Accordion>
     )
 
-    // ---------- Mobile ----------
+    // Mobile
     if (isMobile) {
         return (
             <Box sx={{maxWidth: "96rem", mx: "auto", py: 2}}>
-                <Button
-                    variant={isMobile ? "contained" : "outlined"}
-                    fullWidth
-                    startIcon={<TuneIcon/>}
+                <Button variant={isMobile ? "contained" : "outlined"} fullWidth startIcon={<TuneIcon/>}
                     onClick={() => setDrawerOpen(true)}
                     sx={{justifyContent: "space-between", textTransform: "none", py: 1.5}}
                 >
                     Filter Flights
-                    {totalFilters > 0 && (
-                        <Chip label={totalFilters} size="small" color="primary" sx={{ml: 1}}/>
-                    )}
+                    {totalFilters > 0 && (<Chip label={totalFilters} size="small" color="primary" sx={{ml: 1}}/>)}
                 </Button>
 
-                <Drawer
-                    anchor="bottom"
-                    open={drawerOpen}
-                    onClose={() => setDrawerOpen(false)}
+                <Drawer anchor="bottom" open={drawerOpen} onClose={() => setDrawerOpen(false)}
                     PaperProps={{
                         sx: {maxHeight: "85vh", borderTopLeftRadius: 16, borderTopRightRadius: 16},
                     }}
@@ -168,7 +125,7 @@ const FlightFilters: React.FC<FlightFiltersProps> = ({
         )
     }
 
-    // ---------- Desktop ----------
+    //Desktop
     return (
         <Box sx={{maxWidth: "96rem", pr: {md: 3, lg: 4}}}>
             <Paper sx={{borderRadius: 3, p: 3}}>
