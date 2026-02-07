@@ -12,11 +12,6 @@ const __dirname = path.dirname(__filename);
 // Load .env file
 dotenv.config({path: path.join(__dirname, ".env")});
 
-console.log("CLIENT_ID:", process.env.AMADEUS_CLIENT_ID);
-console.log("CLIENT_SECRET:", process.env.AMADEUS_CLIENT_SECRET);
-
-
-
 // Replace these with your actual Amadeus credentials
 // const AMADEUS_CLIENT_ID = "AR6LEfJsQ7LHKYy33vMEoGezJGIbKuoD";
 // const AMADEUS_CLIENT_SECRET = "GGoB2J8HiAVKGPGH";
