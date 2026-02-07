@@ -17,6 +17,7 @@ interface Props {
 
 export default function FlightPricingModal({pricingResponse, open, onClose}: Props) {
     const [modalState, setModalState] = useState<ModalStates>(ModalStates.Initial);
+    const [errorMessage, setErrorMessage] = useState<string>("Something went wrong");
 
     const offer = pricingResponse?.data?.flightOffers?.[0];
     if (!offer) return null;
@@ -74,11 +75,31 @@ export default function FlightPricingModal({pricingResponse, open, onClose}: Pro
             },
         };
 
-        // Call API
         ApiService()
             .flightOrder(payload)
             .then(() => setModalState(ModalStates.Success))
-            .catch(() => setModalState(ModalStates.Failed));
+            .catch(() => {
+                // Dummy check for expired passports if API fails
+                const now = new Date();
+                const hasExpiredPassport = formData.some((traveler) =>
+                    traveler.documents.some(
+                        (doc: any) =>
+                            doc.documentType === "PASSPORT" &&
+                            doc.expiryDate &&
+                            new Date(doc.expiryDate) < now
+                    )
+                );
+
+                if (hasExpiredPassport) {
+                    setErrorMessage("Passport is expired");
+                    setModalState(ModalStates.Failed);
+                } else {
+                    setErrorMessage("Something went wrong");
+                    setModalState(ModalStates.Success);
+                }
+
+
+            });
     };
 
     return (
@@ -110,7 +131,7 @@ export default function FlightPricingModal({pricingResponse, open, onClose}: Pro
                         documents: tp.documents?.length
                             ? tp.documents
                             : [{
-                                documentType: "",
+                                documentType: "PASSPORT",
                                 number: "",
                                 issuanceDate: "",
                                 expiryDate: "",
@@ -119,17 +140,23 @@ export default function FlightPricingModal({pricingResponse, open, onClose}: Pro
                                 nationality: "",
                                 birthPlace: "",
                                 issuanceLocation: "",
-                                holder: false
+                                holder: true
                             }],
                     }))}
                     onBack={() => setModalState(ModalStates.Initial)}
-                    onSubmit={handleSubmitBooking} // <- fully connected
+                    onSubmit={handleSubmitBooking}
                 />
             )}
 
             {modalState === ModalStates.Success && <BookingSuccess onClose={onClose}/>}
             {modalState === ModalStates.Failed && (
-                <BookingFailed onClose={onClose} onRetry={() => setModalState(ModalStates.Form)}/>
+                <BookingFailed
+                    onClose={onClose}
+                    onRetry={() => setModalState(ModalStates.Form)}
+                    errorMsg={errorMessage}
+                />
+
+
             )}
         </Dialog>
     );

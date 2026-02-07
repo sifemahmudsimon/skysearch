@@ -5,9 +5,10 @@ import {Box, Typography, Button, Stack} from "@mui/material";
 interface BookingFailedProps {
     onClose: () => void;
     onRetry: () => void;
+    errorMsg?: string;
 }
 
-export default function BookingFailed({onClose, onRetry}: BookingFailedProps) {
+export default function BookingFailed({onClose, onRetry, errorMsg}: BookingFailedProps) {
     return (
         <Box
             textAlign="center"
@@ -32,7 +33,7 @@ export default function BookingFailed({onClose, onRetry}: BookingFailedProps) {
                 mb={4} // space between text and buttons
                 maxWidth={{xs: "100%", sm: "400px"}}
             >
-                Something went wrong. Please try again.
+                {errorMsg ? errorMsg : 'Something went wrong. Please try again.'}
             </Typography>
 
             <Stack
