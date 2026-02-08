@@ -32,8 +32,8 @@ interface Segment {
 
 // Main card
 export default function AvailableTicketCard({flight, onSelect}: AvailableTicketCardProps) {
-    const dep = flight.route[0];
-    const arr = flight.route[flight.route.length - 1];
+    // const dep = flight.route[0];
+    // const arr = flight.route[flight.route.length - 1];
 
     if (flight.id === '1') {
         console.log('CardFlight', flight)
