@@ -2,7 +2,7 @@
 import axios from "axios";
 import { EnvService } from "./envService";
 import { AMADEUS_AUTH_TOKEN } from "./servicePattern/apiEndPoint";
-import {TokenService} from "../services/TokenService";
+import {TokenService} from "../services/tokenService";
 import {fetchAmadeusToken} from "./apiService"; // adjust path
 
 export const httpAmadeusApi = axios.create({

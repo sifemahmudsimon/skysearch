@@ -19,7 +19,7 @@ import {
     EventSeat,
     AirplaneTicket,
 } from "@mui/icons-material";
-import {Formats} from "../../../services/Formats";
+import {FormatsService} from "../../../services/formatsService";
 import {AvailableTicketCardProps} from "../../../types/flightTypes";
 
 
@@ -123,7 +123,7 @@ export default function AvailableTicketCard({flight, onSelect}: AvailableTicketC
                         {/* departure */}
                         <AirportBubble
                             code={dep}
-                            time={Formats.fmtTime(flight.departureTime)}
+                            time={FormatsService.fmtTime(flight.departureTime)}
                             icon={<FlightTakeoff sx={{color: "#1D4ED8", fontSize: 20}}/>}
                             bgColor="#EFF6FF"
                         />
@@ -201,7 +201,7 @@ export default function AvailableTicketCard({flight, onSelect}: AvailableTicketC
                                     variant="caption"
                                     sx={{fontWeight: 700, color: "#334155", fontSize: "0.72rem"}}
                                 >
-                                    {Formats.fmtDuration(flight.totalDuration)}
+                                    {FormatsService.fmtDuration(flight.totalDuration)}
                                 </Typography>
                                 <Typography
                                     variant="caption"
@@ -221,7 +221,7 @@ export default function AvailableTicketCard({flight, onSelect}: AvailableTicketC
                         {/* arrival */}
                         <AirportBubble
                             code={arr}
-                            time={Formats.fmtTime(flight.arrivalTime)}
+                            time={FormatsService.fmtTime(flight.arrivalTime)}
                             icon={<FlightLand sx={{color: "#10B981", fontSize: 20}}/>}
                             bgColor="#F0FDF4"
                         />
@@ -267,7 +267,7 @@ export default function AvailableTicketCard({flight, onSelect}: AvailableTicketC
                         <FooterDetail
                             icon={<AccessTime sx={{fontSize: 15, color: "#64748B"}}/>}
                             label="Duration"
-                            value={Formats.fmtDuration(flight.totalDuration)}
+                            value={FormatsService.fmtDuration(flight.totalDuration)}
                         />
                         <FooterDetail
                             icon={<AirplaneTicket sx={{fontSize: 15, color: "#64748B"}}/>}

@@ -1,6 +1,4 @@
 import {NormalizedFlight} from "./normalizedFlight";
-import FlightPriceTrends from "../components/pageWizeComponent/homePage/FlightPriceTrends";
-import {useFieldArray, useForm} from "react-hook-form";
 
 export interface AvailableTicketCardProps {
     flight: NormalizedFlight
@@ -42,6 +40,13 @@ export interface FlightFiltersProps {
 
 export interface SearchFormProps {
     setFlightResults?: (data: any) => void;
+}
+
+
+export interface FlightFilters {
+    carriers?: string[];
+    aircraft?: string[];
+    locations?: string[];
 }
 
 export interface FlightModalProps {

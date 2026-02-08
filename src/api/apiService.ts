@@ -1,6 +1,6 @@
 import {httpAmadeusApi} from './http';
 import {FLIGHT_ORDER, FLIGHT_PRICING, FLIGHT_SEARCH, LOCATION_SEARCH} from './servicePattern/apiEndPoint';
-import {TokenService} from "../services/TokenService";
+import {TokenService} from "../services/tokenService";
 import {TSearchFlightFormData} from "../types/formTypes";
 import {EnvService} from "./envService";
 

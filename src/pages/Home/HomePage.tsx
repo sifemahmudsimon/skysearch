@@ -7,27 +7,16 @@ import AvailableTicketCard from "../../components/pageWizeComponent/homePage/Ava
 import FlightFilters from "../../components/pageWizeComponent/homePage/FlightFilters"
 import {Box, Dialog, LinearProgress, Pagination, Typography} from "@mui/material"
 import {NormalizedFlight} from "../../types/normalizedFlight"
-import {normalizeFlight} from "../../utils/flightNormalizer"
 import FlightPriceTrends from "../../components/pageWizeComponent/homePage/FlightPriceTrends";
 import FlightModal from "../../components/pageWizeComponent/homePage/FlightModal";
 import {ApiService} from "../../api/apiService";
+import {FlightService} from "../../services/flightService";
+import {PaginationItemsPerPage} from "../../constants/paginationVariables";
 
-interface CarrierDict {
-    [code: string]: string
-}
 
-interface AircraftDict {
-    [code: string]: string
-}
-
-interface LocationDict {
-    cityCode: string
-
-    [key: string]: any
-}
 
 function HomePage() {
-    const FLIGHTS_PER_PAGE = 6
+
 
     const [flightResults, setFlightResults] = useState<any>(null)
     const [currentPage, setCurrentPage] = useState(1)
@@ -41,76 +30,43 @@ function HomePage() {
     const [loadingPricing, setLoadingPricing] = useState(false)
     const [open, setOpen] = useState(false)
 
-    console.log('pricingResponse', pricingResponse)
-
-    //Ref for scrolling to results
+    // Ref for scrolling to chart
     const resultsRef = useRef<HTMLDivElement | null>(null)
-
 
     useEffect(() => {
         if (flightResults && resultsRef.current) {
             const top =
                 resultsRef.current.getBoundingClientRect().top + window.scrollY - 80
-            window.scrollTo({
-                top,
-                behavior: "smooth",
-            })
+            window.scrollTo({top, behavior: "smooth"})
         }
     }, [flightResults, currentPage])
 
-    //Filter options from API dictionaries
+    //Get filter options from flightResuts.dictionary
     const filterOptions = useMemo(
-        () => ({
-            carrierOptions: (flightResults?.dictionaries?.carriers || {}) as CarrierDict,
-            aircraftOptions: (flightResults?.dictionaries?.aircraft || {}) as AircraftDict,
-            locationOptions: (flightResults?.dictionaries?.locations || {}) as Record<
-                string,
-                LocationDict
-            >,
-        }),
+        () => FlightService.extractFilterOptions(flightResults),
         [flightResults]
     )
 
-    // 🔹 Normalize flights
-    const normalizedFlights: NormalizedFlight[] = useMemo(() => {
-        if (!flightResults?.data) return []
-
-        const flightsArray: any[] = Array.isArray(flightResults.data[0])
-            ? flightResults.data.flat()
-            : flightResults.data
-
-        return flightsArray.map(normalizeFlight)
-    }, [flightResults])
-
-    //Apply filters
-    const filteredFlights = useMemo(() => {
-        if (!normalizedFlights.length) return []
-
-        return normalizedFlights.filter((flight) => {
-            const carrierMatch =
-                filters.carriers.length === 0 ||
-                flight.airlines.some((c) => filters.carriers.includes(c))
-
-            const aircraftMatch =
-                filters.aircraft.length === 0 ||
-                flight.aircraftTypes.some((a) => filters.aircraft.includes(a))
-
-            const locationMatch =
-                filters.locations.length === 0 ||
-                flight.route.some((code) => filters.locations.includes(code))
-
-            return carrierMatch && aircraftMatch && locationMatch
-        })
-    }, [normalizedFlights, filters])
-
-    //Pagination
-    const totalPages = Math.ceil(filteredFlights.length / FLIGHTS_PER_PAGE)
-    const paginatedFlights = filteredFlights.slice(
-        (currentPage - 1) * FLIGHTS_PER_PAGE,
-        currentPage * FLIGHTS_PER_PAGE
+    //Normalize flights for flatting chunk arrays
+    const normalizedFlights: NormalizedFlight[] = useMemo(
+        () => FlightService.normalizeFlights(flightResults?.data || []),
+        [flightResults]
     )
 
-    //Checkbox handler
+    //Apply filters
+    const filteredFlights = useMemo(
+        () => FlightService.applyFilters(normalizedFlights, filters),
+        [normalizedFlights, filters]
+    )
+
+    //Pagination
+    const totalPages = Math.ceil(filteredFlights.length / PaginationItemsPerPage.FLIGHTS_PER_PAGE)
+    const paginatedFlights = useMemo(
+        () => FlightService.paginateFlights(filteredFlights, currentPage, PaginationItemsPerPage.FLIGHTS_PER_PAGE),
+        [filteredFlights, currentPage]
+    )
+
+    // Checkbox handler
     const handleCheckboxChange = (
         category: keyof typeof filters,
         value: string
@@ -124,7 +80,6 @@ function HomePage() {
                     : [...prev[category], value],
             }
         })
-
         setCurrentPage(1)
     }
 
@@ -140,16 +95,10 @@ function HomePage() {
             },
         }
 
-        console.log('payload', payload)
-
         ApiService()
             .flightPricing(payload)
-            .then((res: any) => {
-                setPricingResponse(res.data)
-            })
-            .catch((err) => {
-                console.error("Pricing error", err)
-            })
+            .then((res: any) => setPricingResponse(res.data))
+            .catch((err) => console.error("Pricing error", err))
             .finally(() => setLoadingPricing(false))
     }
 

@@ -11,7 +11,7 @@ function fmtDuration(iso: string) {
     return [m[1] && `${m[1]}h`, m[2] && `${m[2]}m`].filter(Boolean).join(" ");
 }
 
-export const Formats = {
+export const FormatsService = {
     fmtTime,
     fmtDuration
 };
