@@ -1,5 +1,5 @@
 // src/context/ThemeContext.tsx
-import React, {createContext, useContext, useState, ReactNode, useEffect} from "react";
+import React, {createContext, useContext, useState, ReactNode} from "react";
 import { ThemeProvider } from "@mui/material";
 import { lightTheme, darkTheme } from "../theme/theme";
 
