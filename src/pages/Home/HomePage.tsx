@@ -88,6 +88,8 @@ function HomePage() {
         setLoadingPricing(true)
         setPricingResponse(null)
 
+        console.log('SelectedFlight', flight.raw)
+
         const payload = {
             data: {
                 type: "flight-offers-pricing",

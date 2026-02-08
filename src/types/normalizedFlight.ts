@@ -3,12 +3,13 @@ export interface NormalizedFlight {
     price: number;
     currency: string;
     cabin: string;
-    totalDuration: string;
-    stops: number;
-    route: string[];
-    departureTime: string;
-    arrivalTime: string;
+    totalDuration: string; // sum of all itineraries
+    stops: number; // total stops across all itineraries
+    route: string[]; // all departure airports in order
+    departureTime: string; // first departure of outbound
+    arrivalTime: string;   // last arrival of return
     airlines: string[];
     aircraftTypes: string[];
-    raw: any
+    itineraries: any[]; // full itineraries preserved
+    raw: any;
 }

@@ -22,18 +22,27 @@ import {
 import {FormatsService} from "../../../services/formatsService";
 import {AvailableTicketCardProps} from "../../../types/flightTypes";
 
+interface Segment {
+    departure: { iataCode: string; at: string };
+    arrival: { iataCode: string; at: string };
+    carrierCode: string;
+    aircraft?: { code: string };
+    duration: string;
+}
 
-//main card
+// Main card
 export default function AvailableTicketCard({flight, onSelect}: AvailableTicketCardProps) {
-
     const dep = flight.route[0];
     const arr = flight.route[flight.route.length - 1];
-    const direct = flight.stops === 0;
+
+    if (flight.id === '1') {
+        console.log('CardFlight', flight)
+    }
 
     return (
         <Card
             sx={{
-                fullWidth: "100%",
+                width: "100%",
                 borderRadius: 4,
                 overflow: "hidden",
                 transition: "all 0.3s cubic-bezier(.4,0,.2,1)",
@@ -48,7 +57,7 @@ export default function AvailableTicketCard({flight, onSelect}: AvailableTicketC
                 },
             }}
         >
-            {/* accent strip */}
+            {/* Accent strip */}
             <Box
                 sx={{
                     height: 5,
@@ -57,7 +66,7 @@ export default function AvailableTicketCard({flight, onSelect}: AvailableTicketC
             />
 
             <CardContent sx={{p: 0}}>
-                {/*header row: airline + cabin | price*/}
+                {/* Header row: airline + cabin | price */}
                 <Box
                     sx={{
                         display: "flex",
@@ -110,148 +119,187 @@ export default function AvailableTicketCard({flight, onSelect}: AvailableTicketC
                     </Box>
                 </Box>
 
-                {/*route visualisation*/}
+                {/* Route visualization: show outbound + return if available */}
                 <Box sx={{px: 3, pt: 1.5, pb: 2}}>
-                    <Box
-                        sx={{
-                            display: "flex",
-                            alignItems: "flex-start",
-                            justifyContent: "space-between",
-                            gap: 2,
-                        }}
-                    >
-                        {/* departure */}
-                        <AirportBubble
-                            code={dep}
-                            time={FormatsService.fmtTime(flight.departureTime)}
-                            icon={<FlightTakeoff sx={{color: "#1D4ED8", fontSize: 20}}/>}
-                            bgColor="#EFF6FF"
-                        />
+                    {flight.itineraries.map((itinerary, idx) => {
+                        const segments = itinerary.segments;
+                        const depCode = segments[0].departure.iataCode;
+                        const arrCode = segments[segments.length - 1].arrival.iataCode;
+                        const stops = segments.length - 1;
+                        const direct = stops === 0;
 
-                        {/* flight path */}
-                        <Box sx={{flex: 1, pt: 1.2, position: "relative"}}>
-                            {/* line */}
-                            <Box
-                                sx={{
-                                    height: 2,
-                                    borderRadius: 1,
-                                    bgcolor: "",
-                                    position: "relative",
-                                    overflow: "visible",
-                                }}
-                            >
-                                {/* dash overlay */}
+                        const isReturn = idx !== 0; // return leg
+
+                        return (
+                            <Box key={idx} sx={{mb: idx < flight.itineraries.length - 1 ? 3 : 0}}>
+                                <Typography variant="subtitle2" sx={{fontWeight: 600, mb: 1}}>
+                                    {idx === 0 ? "Outbound" : "Return"}
+                                </Typography>
+
                                 <Box
                                     sx={{
-                                        position: "absolute",
-                                        inset: 0,
-                                        background:
-                                            "repeating-linear-gradient(90deg,#3B82F6,#3B82F6 6px,transparent 6px,transparent 12px)",
-                                        borderRadius: 1,
-                                        opacity: 0.45,
+                                        display: "flex",
+                                        alignItems: "flex-start",
+                                        justifyContent: "space-between",
+                                        gap: 2,
+                                        flexDirection: isReturn ? "row-reverse" : "row", // flip for return
                                     }}
-                                />
-
-                                {/* stop dots */}
-                                {Array.from({length: flight.stops}).map((_, i) => (
-                                    <Box
-                                        key={i}
-                                        sx={{
-                                            position: "absolute",
-                                            top: "50%",
-                                            left: `${((i + 1) / (flight.stops + 1)) * 100}%`,
-                                            transform: "translate(-50%,-50%)",
-                                            width: 10,
-                                            height: 10,
-                                            borderRadius: "50%",
-                                            bgcolor: "#FFF",
-                                            border: "2.5px solid #F59E0B",
-                                            zIndex: 2,
-                                        }}
+                                >
+                                    {/* Departure */}
+                                    <AirportBubble
+                                        code={depCode}
+                                        time={FormatsService.fmtTime(segments[0].departure.at)}
+                                        icon={
+                                            <FlightTakeoff
+                                                sx={{
+                                                    color: "#1D4ED8",
+                                                    fontSize: 20,
+                                                    transform: isReturn ? "scaleX(-1)" : "none", // flip icon horizontally
+                                                }}
+                                            />
+                                        }
+                                        bgColor={isReturn ? "#F0FDF4" : "#EFF6FF"} // swap colors for return
                                     />
-                                ))}
+
+                                    {/* Flight path */}
+                                    <Box sx={{flex: 1, pt: 1.2, position: "relative"}}>
+                                        {/* Line */}
+                                        <Box
+                                            sx={{
+                                                height: 2,
+                                                borderRadius: 1,
+                                                position: "relative",
+                                                overflow: "visible",
+                                                transform: isReturn ? "scaleX(-1)" : "none", // flip dash line
+                                            }}
+                                        >
+                                            {/* Dash overlay */}
+                                            <Box
+                                                sx={{
+                                                    position: "absolute",
+                                                    inset: 0,
+                                                    background:
+                                                        "repeating-linear-gradient(90deg,#3B82F6,#3B82F6 6px,transparent 6px,transparent 12px)",
+                                                    borderRadius: 1,
+                                                    opacity: 0.45,
+                                                }}
+                                            />
+
+                                            {/* Stop dots */}
+                                            {Array.from({length: stops}).map((_, i) => (
+                                                <Box
+                                                    key={i}
+                                                    sx={{
+                                                        position: "absolute",
+                                                        top: "50%",
+                                                        left: `${((i + 1) / (stops + 1)) * 100}%`,
+                                                        transform: "translate(-50%,-50%)",
+                                                        width: 10,
+                                                        height: 10,
+                                                        borderRadius: "50%",
+                                                        bgcolor: "#FFF",
+                                                        border: "2.5px solid #F59E0B",
+                                                        zIndex: 2,
+                                                    }}
+                                                />
+                                            ))}
+                                        </Box>
+
+                                        {/* Plane bubble */}
+                                        <Box
+                                            sx={{
+                                                position: "absolute",
+                                                left: "50%",
+                                                transform: "translate(-50%,-50%)",
+                                                bgcolor: "#FFF",
+                                                borderRadius: "50%",
+                                                width: 34,
+                                                height: 34,
+                                                display: "flex",
+                                                alignItems: "center",
+                                                justifyContent: "center",
+                                                boxShadow: "0 2px 12px rgba(29,78,216,0.18)",
+                                                zIndex: 3,
+                                            }}
+                                        >
+                                            <AirplanemodeActive
+                                                sx={{
+                                                    color: "#1D4ED8",
+                                                    fontSize: 18,
+                                                    transform: isReturn ? "rotate(-90deg)" : "rotate(90deg)", // rotate for return
+                                                }}
+                                            />
+                                        </Box>
+
+                                        {/* Duration + stops label */}
+                                        <Box sx={{display: "flex", justifyContent: "center", gap: 0.8, mt: 2.5}}>
+                                            <Typography
+                                                variant="caption"
+                                                sx={{fontWeight: 700, color: "#334155", fontSize: "0.72rem"}}
+                                            >
+                                                {FormatsService.fmtDuration(itinerary.duration)}
+                                            </Typography>
+                                            <Typography
+                                                variant="caption"
+                                                sx={{
+                                                    fontWeight: 600,
+                                                    color: direct ? "#10B981" : "#F59E0B",
+                                                    fontSize: "0.68rem",
+                                                    textTransform: "uppercase",
+                                                    letterSpacing: "0.06em",
+                                                }}
+                                            >
+                                                {direct ? "Direct" : `${stops} stop${stops > 1 ? "s" : ""}`}
+                                            </Typography>
+                                        </Box>
+                                    </Box>
+
+                                    {/* Arrival */}
+                                    <AirportBubble
+                                        code={arrCode}
+                                        time={FormatsService.fmtTime(segments[segments.length - 1].arrival.at)}
+                                        icon={
+                                            <FlightLand
+                                                sx={{
+                                                    color: "#10B981",
+                                                    fontSize: 20,
+                                                    transform: isReturn ? "scaleX(-1)" : "none", // flip icon horizontally
+                                                }}
+                                            />
+                                        }
+                                        bgColor={isReturn ? "#EFF6FF" : "#F0FDF4"} // swap colors for return
+                                    />
+                                </Box>
+
+                                {/* Full route breadcrumb */}
+                                {segments.length > 1 && (
+                                    <Typography
+                                        variant="caption"
+                                        sx={{
+                                            display: "block",
+                                            textAlign: "center",
+                                            mt: 2,
+                                            color: "#94A3B8",
+                                            fontWeight: 500
+                                        }}
+                                    >
+                                        {segments.map((s: Segment) => s.departure.iataCode).join("  -  ")} - {segments[segments.length - 1].arrival.iataCode}
+                                    </Typography>
+                                )}
                             </Box>
-
-                            {/* plane bubble */}
-                            <Box
-                                sx={{
-                                    position: "absolute",
-
-                                    left: "50%",
-                                    transform: "translate(-50%,-50%)",
-                                    bgcolor: "#FFF",
-                                    borderRadius: "50%",
-                                    width: 34,
-                                    height: 34,
-                                    display: "flex",
-                                    alignItems: "center",
-                                    justifyContent: "center",
-                                    boxShadow: "0 2px 12px rgba(29,78,216,0.18)",
-                                    zIndex: 3,
-                                }}
-                            >
-                                <AirplanemodeActive
-                                    sx={{color: "#1D4ED8", fontSize: 18, transform: "rotate(90deg)"}}
-                                />
-                            </Box>
-
-                            {/* duration + stops label */}
-                            <Box sx={{display: "flex", justifyContent: "center", gap: 0.8, mt: 2.5}}>
-                                <Typography
-                                    variant="caption"
-                                    sx={{fontWeight: 700, color: "#334155", fontSize: "0.72rem"}}
-                                >
-                                    {FormatsService.fmtDuration(flight.totalDuration)}
-                                </Typography>
-                                <Typography
-                                    variant="caption"
-                                    sx={{
-                                        fontWeight: 600,
-                                        color: direct ? "#10B981" : "#F59E0B",
-                                        fontSize: "0.68rem",
-                                        textTransform: "uppercase",
-                                        letterSpacing: "0.06em",
-                                    }}
-                                >
-                                    {direct ? "Direct" : `${flight.stops} stop${flight.stops > 1 ? "s" : ""}`}
-                                </Typography>
-                            </Box>
-                        </Box>
-
-                        {/* arrival */}
-                        <AirportBubble
-                            code={arr}
-                            time={FormatsService.fmtTime(flight.arrivalTime)}
-                            icon={<FlightLand sx={{color: "#10B981", fontSize: 20}}/>}
-                            bgColor="#F0FDF4"
-                        />
-                    </Box>
-
-                    {/*full route breadcrumb*/}
-                    {flight.route.length > 2 && (
-                        <Typography
-                            variant="caption"
-                            sx={{
-                                display: "block",
-                                textAlign: "center",
-                                mt: 2,
-                                color: "#94A3B8",
-                                fontWeight: 500,
-                            }}
-                        >
-                            {flight.route.join("  -  ")}
-                        </Typography>
-                    )}
+                        );
+                    })}
                 </Box>
 
-                {/*boarding-pass punch-hole style divider */}
+
+                {/* Boarding-pass punch-hole style divider */}
                 <Box sx={{position: "relative", mx: 0, my: 0.5}}>
                     <Divider sx={{borderStyle: "dashed", borderColor: "#E2E8F0"}}/>
                     <PunchHole side="left"/>
                     <PunchHole side="right"/>
                 </Box>
 
-                {/*footer: meta chips + book button*/}
+                {/* Footer: meta chips + book button */}
                 <Box
                     sx={{
                         display: "flex",
@@ -309,13 +357,12 @@ export default function AvailableTicketCard({flight, onSelect}: AvailableTicketC
     );
 }
 
-//sub-components
-
-function AirportBubble({code, time, icon, bgColor,}: {
+// Sub-components
+function AirportBubble({code, time, icon, bgColor}: {
     code: string;
     time: string;
     icon: React.ReactNode;
-    bgColor: string;
+    bgColor: string
 }) {
     return (
         <Box sx={{textAlign: "center", minWidth: 64}}>
@@ -363,7 +410,7 @@ function PunchHole({side}: { side: "left" | "right" }) {
     );
 }
 
-function FooterDetail({icon, label, value,}: { icon: React.ReactNode; label: string; value: string; }) {
+function FooterDetail({icon, label, value}: { icon: React.ReactNode; label: string; value: string }) {
     return (
         <Box>
             <Box sx={{display: "flex", alignItems: "center", gap: 0.4, mb: 0.1}}>
