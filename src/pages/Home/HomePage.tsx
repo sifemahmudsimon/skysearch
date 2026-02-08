@@ -56,7 +56,7 @@ function HomePage() {
                 behavior: "smooth",
             })
         }
-    }, [flightResults])
+    }, [flightResults, currentPage])
 
     //Filter options from API dictionaries
     const filterOptions = useMemo(
@@ -82,7 +82,7 @@ function HomePage() {
         return flightsArray.map(normalizeFlight)
     }, [flightResults])
 
-    // 🔹 Apply filters
+    //Apply filters
     const filteredFlights = useMemo(() => {
         if (!normalizedFlights.length) return []
 
@@ -180,7 +180,11 @@ function HomePage() {
 
             <Box
                 ref={resultsRef}>
-                <FlightPriceTrends finalResult={flightResults?.data ?? null}/>
+                {flightResults?.data?.length > 0 &&
+                    <FlightPriceTrends
+                        finalResult={paginatedFlights.length ? paginatedFlights.map(f => f.raw) : []} // always pass an array
+                    />
+                }
             </Box>
 
             <Typography
@@ -242,7 +246,7 @@ function HomePage() {
                             zIndex: 10,
                         }}
                     >
-                        {flightResults.length > 0 && (
+                        {flightResults.data.length > 0 && (
                             <FlightFilters
                                 filters={filters}
                                 filterOptions={filterOptions}

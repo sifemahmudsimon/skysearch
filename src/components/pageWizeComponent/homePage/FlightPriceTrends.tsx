@@ -55,10 +55,14 @@ const FlightPriceTrends: React.FC<FlightPriceTrendsProps> = ({finalResult}) => {
             : "",
     }));
 
-    // return if no data
-    if (!enrichedData.length) {
-        return null
-    }
+    // return empty if no data
+    const dataToRender = enrichedData.length ? enrichedData : [{
+        formattedDeparture: '',
+        price: 0,
+        min: 0,
+        avg: 0,
+        max: 0
+    }];
 
     return (
         <Box
@@ -85,7 +89,7 @@ const FlightPriceTrends: React.FC<FlightPriceTrendsProps> = ({finalResult}) => {
                 Flight Price Trends.
             </Typography>
             <ResponsiveContainer width="100%" height={350}>
-                <LineChart data={enrichedData} margin={{top: 20, right: 30, left: 20, bottom: 20}}>
+                <LineChart data={dataToRender} margin={{top: 20, right: 30, left: 20, bottom: 20}}>
                     <XAxis
                         dataKey="formattedDeparture"
                         label={{value: "Departure", position: "insideBottom", offset: -5}}
@@ -93,13 +97,9 @@ const FlightPriceTrends: React.FC<FlightPriceTrendsProps> = ({finalResult}) => {
                     <YAxis label={{value: "Price (USD)", angle: -90, position: "insideLeft"}}/>
                     <Tooltip/>
                     <Legend verticalAlign="top" height={36}/>
-                    {/* Actual flight prices */}
                     <Line type="monotone" dataKey="price" stroke="#8884d8" name="Price" dot={{r: 5}}/>
-                    {/* Min price */}
                     <Line type="monotone" dataKey="min" stroke="#82ca9d" strokeDasharray="5 5" name="Min"/>
-                    {/* Avg price */}
                     <Line type="monotone" dataKey="avg" stroke="#ffc658" strokeDasharray="5 5" name="Avg"/>
-                    {/* Max price */}
                     <Line type="monotone" dataKey="max" stroke="#ff4d4f" strokeDasharray="5 5" name="Max"/>
                 </LineChart>
             </ResponsiveContainer>
